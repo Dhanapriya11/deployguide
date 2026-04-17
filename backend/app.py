@@ -9,7 +9,7 @@ import threading, time, math
 
 load_dotenv()
 
-app = Flask(__name__, static_folder='../frontend/static', template_folder='../frontend/templates')
+app = Flask(__name__, template_folder="templates")
 CORS(app)
 
 # ─── MongoDB Atlas ────────────────────────────────────────────────────────────
