@@ -5,6 +5,7 @@ from datetime import datetime, timedelta
 import os, hashlib, hmac, json, requests, razorpay
 from dotenv import load_dotenv
 from bson import ObjectId
+from flask import render_template
 import threading, time, math
 
 load_dotenv()
@@ -462,17 +463,19 @@ def deduct_from_pool(amount):
 # ROUTES
 # ─────────────────────────────────────────────────────────────────────────────
 
+
+
 @app.route('/')
 def index():
-    return send_from_directory('../frontend/templates', 'index.html')
+    return render_template('index.html')
 
 @app.route('/dashboard')
 def dashboard():
-    return send_from_directory('../frontend/templates', 'dashboard.html')
+    return render_template('dashboard.html')
 
 @app.route('/admin')
 def admin():
-    return send_from_directory('../frontend/templates', 'admin.html')
+    return render_template('admin.html')
 
 # ── 1. Worker Registration ────────────────────────────────────────────────────
 @app.route('/api/worker/register', methods=['POST'])
