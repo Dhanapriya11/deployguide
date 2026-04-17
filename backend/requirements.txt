@@ -1,0 +1,8 @@
+flask
+flask-cors
+pymongo[srv]
+razorpay
+requests
+python-dotenv
+dnspython
+gunicorn

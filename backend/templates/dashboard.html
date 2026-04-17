@@ -1,0 +1,264 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GigShield — My Dashboard</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+:root{--blue:#2547D0;--green:#1DB954;--orange:#FF6B35;--red:#E63946;--bg:#F5F4F0;--card:#FFFFFF;--text:#0D0D0D;--muted:#6B7280;--border:#E5E2D9;--gold:#F4B942;}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;}
+nav{background:var(--blue);padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:56px;position:sticky;top:0;z-index:100;}
+.logo{font-family:Syne,sans-serif;font-weight:800;font-size:20px;color:#fff;}.logo span{color:var(--gold);}
+nav a{color:rgba(255,255,255,.8);font-size:13px;text-decoration:none;}
+.hero{background:var(--blue);color:#fff;padding:32px 20px 48px;position:relative;}
+.hero h2{font-family:Syne,sans-serif;font-weight:800;font-size:26px;margin-bottom:4px;}
+.hero p{font-size:14px;color:rgba(255,255,255,.7);}
+.content{padding:0 20px 100px;transform:translateY(-24px);}
+.card{background:var(--card);border-radius:16px;padding:20px;border:1px solid var(--border);margin-bottom:14px;}
+.card-title{font-family:Syne,sans-serif;font-weight:700;font-size:15px;margin-bottom:14px;}
+.stat-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px;}
+.st{background:var(--bg);border-radius:12px;padding:14px;text-align:center;}
+.sv{font-family:Syne,sans-serif;font-weight:800;font-size:20px;line-height:1;}
+.sl{font-size:10px;color:var(--muted);margin-top:3px;}
+.btn{width:100%;padding:14px;border:none;border-radius:12px;font-family:Syne,sans-serif;font-size:15px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-primary{background:var(--blue);color:#fff;margin-bottom:10px;}
+.btn-outline{background:transparent;color:var(--blue);border:2px solid var(--blue);}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:6px;}
+.form-group input{width:100%;padding:12px;border:1.5px solid var(--border);border-radius:10px;font-family:'DM Sans',sans-serif;font-size:15px;}
+.form-group input:focus{outline:none;border-color:var(--blue);}
+.alert{border-radius:10px;padding:12px;margin-bottom:12px;font-size:14px;display:none;}
+.alert.show{display:block;}
+.alert-success{background:#e6f9ee;color:#155724;border:1px solid #b2dfcc;}
+.alert-error{background:#fde8e8;color:#721c24;border:1px solid #f5c2c2;}
+.hist-row{display:flex;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.hist-row:last-child{border-bottom:none;}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.badge-high{background:#fde8e8;color:var(--red);}
+.badge-medium{background:#fff3e0;color:var(--orange);}
+.badge-low{background:#e6f9ee;color:#155724;}
+.premium-banner{background:linear-gradient(135deg,var(--blue),#3a6ff8);color:#fff;border-radius:14px;padding:18px;margin-bottom:14px;}
+.pb-amt{font-family:Syne,sans-serif;font-weight:800;font-size:36px;}
+.pb-lbl{font-size:12px;color:rgba(255,255,255,.7);margin-top:2px;}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);display:flex;z-index:200;}
+.bn-item{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 0;text-decoration:none;color:var(--muted);font-size:10px;font-weight:600;gap:3px;}
+.bn-item .ic{font-size:20px;}
+.bn-item.active{color:var(--blue);}
+.empty{text-align:center;padding:24px;color:var(--muted);font-size:13px;}
+.spinner{width:18px;height:18px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="logo">Gig<span>Shield</span></div>
+  <a href="/">← Home</a>
+</nav>
+
+<div id="loginSection">
+  <div class="hero">
+    <h2>My Dashboard</h2>
+    <p>Enter your phone to view your coverage</p>
+  </div>
+  <div class="content">
+    <div class="card">
+      <div class="card-title">Login with Phone</div>
+      <div id="dashLoginAlert" class="alert"></div>
+      <div class="form-group">
+        <label>Phone Number</label>
+        <input type="tel" id="dash_phone" placeholder="9876543210" maxlength="10">
+      </div>
+      <button class="btn btn-primary" onclick="dashLogin()">View My Coverage</button>
+    </div>
+  </div>
+</div>
+
+<div id="dashSection" style="display:none">
+  <div class="hero">
+    <h2 id="dash_hello">Hello, Worker!</h2>
+    <p id="dash_sub">Loading your coverage details…</p>
+  </div>
+
+  <div class="content">
+    <!-- Stats -->
+    <div class="stat-row">
+      <div class="st"><div class="sv" style="color:var(--blue)" id="d_paid">₹0</div><div class="sl">Contributed</div></div>
+      <div class="st"><div class="sv" style="color:var(--green)" id="d_recv">₹0</div><div class="sl">Received</div></div>
+      <div class="st"><div class="sv" style="color:var(--gold)" id="d_net">₹0</div><div class="sl">Net Benefit</div></div>
+    </div>
+
+    <!-- Premium card -->
+    <div class="premium-banner">
+      <div class="pb-lbl">Weekly Premium</div>
+      <div class="pb-amt" id="d_premium">₹0</div>
+      <div class="pb-lbl" id="d_tier">— risk zone</div>
+    </div>
+
+    <!-- Pay button -->
+    <button class="btn btn-primary" onclick="payMyPremium()" id="payBtn">💳 Pay This Week's Premium</button>
+
+    <!-- Coverage info -->
+    <div class="card">
+      <div class="card-title">🛡 Your Coverage</div>
+      <div class="hist-row"><span style="color:var(--muted)">Heavy Rain (>50mm)</span><span style="font-weight:700;color:var(--green)">75% daily</span></div>
+      <div class="hist-row"><span style="color:var(--muted)">Flood / Curfew</span><span style="font-weight:700;color:var(--green)">75% daily</span></div>
+      <div class="hist-row"><span style="color:var(--muted)">Extreme Heat / Wind</span><span style="font-weight:700;color:var(--green)">50% daily</span></div>
+      <div class="hist-row"><span style="color:var(--muted)">Payout Method</span><span id="d_upi" style="font-size:12px;color:var(--muted)">—</span></div>
+      <div class="hist-row"><span style="color:var(--muted)">Platform</span><span id="d_platform">—</span></div>
+    </div>
+
+    <!-- Payment history -->
+    <div class="card" id="payHistCard">
+      <div class="card-title">💳 Premium Payments</div>
+      <div id="payHistList"><div class="empty">No payments yet</div></div>
+    </div>
+
+    <!-- Payout history -->
+    <div class="card" id="payoutHistCard">
+      <div class="card-title">💸 Payout History</div>
+      <div id="payoutHistList"><div class="empty">No payouts received yet</div></div>
+    </div>
+  </div>
+</div>
+
+<div class="bottom-nav">
+  <a href="/" class="bn-item"><span class="ic">🏠</span>Home</a>
+  <a href="/dashboard" class="bn-item active"><span class="ic">📊</span>Dashboard</a>
+  <a href="/" class="bn-item"><span class="ic">🌦</span>Weather</a>
+  <a href="/admin" class="bn-item"><span class="ic">⚙️</span>Admin</a>
+</div>
+
+<script>
+const API = '';
+let workerData = null;
+
+async function dashLogin() {
+  const phone = document.getElementById('dash_phone').value.trim();
+  const alert = document.getElementById('dashLoginAlert');
+  if (!phone) { showAlert(alert,'error','Enter phone'); return; }
+
+  const res = await fetch(`${API}/api/worker/login`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({phone})
+  });
+  const d = await res.json();
+  if (!res.ok) { showAlert(alert,'error',d.error); return; }
+
+  workerData = d.worker;
+  showDash();
+  loadDashDetails(d.worker._id);
+}
+
+function showDash() {
+  document.getElementById('loginSection').style.display = 'none';
+  document.getElementById('dashSection').style.display = 'block';
+  const w = workerData;
+  document.getElementById('dash_hello').textContent = `Hello, ${w.name}! 👋`;
+  document.getElementById('dash_sub').textContent = `${w.district} · ${w.platform} · ${w.risk_tier} Risk`;
+  document.getElementById('d_paid').textContent = `₹${(w.total_paid_in||0).toLocaleString()}`;
+  document.getElementById('d_recv').textContent = `₹${(w.total_received||0).toLocaleString()}`;
+  document.getElementById('d_net').textContent = `₹${((w.total_received||0)-(w.total_paid_in||0)).toLocaleString()}`;
+  document.getElementById('d_premium').textContent = `₹${w.weekly_premium}`;
+  document.getElementById('d_tier').textContent = `${w.risk_tier} risk zone · ${w.district}`;
+  document.getElementById('d_upi').textContent = w.upi_id;
+  document.getElementById('d_platform').textContent = w.platform;
+}
+
+async function loadDashDetails(wid) {
+  const res = await fetch(`${API}/api/worker/${wid}`);
+  const d = await res.json();
+  if (!res.ok) return;
+
+  // Update stats
+  const w = d.worker;
+  document.getElementById('d_paid').textContent = `₹${(w.total_paid_in||0).toLocaleString()}`;
+  document.getElementById('d_recv').textContent = `₹${(w.total_received||0).toLocaleString()}`;
+  document.getElementById('d_net').textContent = `₹${((w.total_received||0)-(w.total_paid_in||0)).toLocaleString()}`;
+
+  // Payments
+  if (d.payments && d.payments.length > 0) {
+    document.getElementById('payHistList').innerHTML = d.payments.map(p =>
+      `<div class="hist-row">
+        <div>
+          <div style="font-weight:600">Premium Payment</div>
+          <div style="font-size:11px;color:var(--muted)">${p.paid_at ? new Date(p.paid_at).toLocaleDateString('en-IN') : '—'}</div>
+        </div>
+        <span style="color:var(--red);font-weight:700">-₹${p.amount}</span>
+      </div>`
+    ).join('');
+  }
+
+  // Payouts
+  if (d.payouts && d.payouts.length > 0) {
+    document.getElementById('payoutHistList').innerHTML = d.payouts.map(p =>
+      `<div class="hist-row">
+        <div>
+          <div style="font-weight:600">${p.trigger_type||'Payout'}</div>
+          <div style="font-size:11px;color:var(--muted)">${p.sent_at ? new Date(p.sent_at).toLocaleDateString('en-IN') : '—'}</div>
+        </div>
+        <span style="color:var(--green);font-weight:700">+₹${p.amount}</span>
+      </div>`
+    ).join('');
+  }
+}
+
+async function payMyPremium() {
+  if (!workerData) return;
+  const btn = document.getElementById('payBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Loading…';
+
+  try {
+    const res = await fetch(`${API}/api/payment/create-order`, {
+      method:'POST', headers:{'Content-Type':'application/json'},
+      body: JSON.stringify({worker_id: workerData._id})
+    });
+    const order = await res.json();
+    if (!res.ok) throw new Error(order.error);
+
+    const options = {
+      key: order.key,
+      amount: order.amount,
+      currency: 'INR',
+      name: 'GigShield',
+      description: `Weekly Premium — ₹${workerData.weekly_premium}`,
+      order_id: order.order_id,
+      handler: async function(response) {
+        const vRes = await fetch(`${API}/api/payment/verify`, {
+          method:'POST', headers:{'Content-Type':'application/json'},
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            worker_id: workerData._id
+          })
+        });
+        const vd = await vRes.json();
+        if (vd.success) {
+          alert(`✅ Payment successful! ₹${workerData.weekly_premium} added to community pool.`);
+          loadDashDetails(workerData._id);
+        }
+      },
+      prefill: {name: workerData.name, contact: workerData.phone},
+      theme: {color: '#2547D0'}
+    };
+    new Razorpay(options).open();
+  } catch(e) {
+    alert('Error: ' + e.message);
+  } finally {
+    btn.disabled = false;
+    btn.textContent = '💳 Pay This Week\'s Premium';
+  }
+}
+
+function showAlert(el, type, msg) {
+  el.className = `alert alert-${type} show`;
+  el.textContent = msg;
+}
+</script>
+</body>
+</html>

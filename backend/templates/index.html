@@ -1,0 +1,1106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GigShield — Protect Your Income</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+<style>
+:root {
+  --blue: #2547D0;
+  --blue-dark: #1a3599;
+  --green: #1DB954;
+  --orange: #FF6B35;
+  --red: #E63946;
+  --bg: #F5F4F0;
+  --card: #FFFFFF;
+  --text: #0D0D0D;
+  --muted: #6B7280;
+  --border: #E5E2D9;
+  --gold: #F4B942;
+}
+* { margin:0; padding:0; box-sizing:border-box; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+}
+
+/* NAV */
+nav {
+  background: var(--blue);
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 56px;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+.nav-logo {
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 20px;
+  color: #fff;
+  letter-spacing: -0.5px;
+}
+.nav-logo span { color: var(--gold); }
+.nav-links { display: flex; gap: 16px; }
+.nav-links a {
+  color: rgba(255,255,255,0.85);
+  text-decoration: none;
+  font-size: 13px;
+  font-weight: 500;
+  transition: color .2s;
+}
+.nav-links a:hover { color: #fff; }
+
+/* HERO */
+.hero {
+  background: var(--blue);
+  color: #fff;
+  padding: 48px 20px 64px;
+  position: relative;
+  overflow: hidden;
+}
+.hero::before {
+  content: 'சீட்டு';
+  position: absolute;
+  right: -20px;
+  top: 10px;
+  font-family: 'Syne', sans-serif;
+  font-size: 120px;
+  font-weight: 800;
+  color: rgba(255,255,255,0.06);
+  pointer-events: none;
+  line-height: 1;
+}
+.hero-tag {
+  display: inline-block;
+  background: var(--gold);
+  color: #000;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 16px;
+}
+.hero h1 {
+  font-family: 'Syne', sans-serif;
+  font-size: 38px;
+  font-weight: 800;
+  line-height: 1.1;
+  margin-bottom: 12px;
+  letter-spacing: -1px;
+}
+.hero h1 span { color: var(--gold); }
+.hero p {
+  font-size: 16px;
+  line-height: 1.6;
+  color: rgba(255,255,255,0.8);
+  max-width: 480px;
+  margin-bottom: 28px;
+}
+.hero-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 12px;
+  margin-top: 32px;
+}
+.stat-card {
+  background: rgba(255,255,255,0.1);
+  border-radius: 12px;
+  padding: 14px 10px;
+  text-align: center;
+  backdrop-filter: blur(4px);
+  border: 1px solid rgba(255,255,255,0.15);
+}
+.stat-card .val {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--gold);
+  line-height: 1;
+}
+.stat-card .lbl {
+  font-size: 10px;
+  color: rgba(255,255,255,0.7);
+  margin-top: 4px;
+  letter-spacing: 0.3px;
+}
+
+/* SECTION */
+.section {
+  padding: 32px 20px;
+}
+.section-title {
+  font-family: 'Syne', sans-serif;
+  font-size: 22px;
+  font-weight: 700;
+  margin-bottom: 4px;
+  letter-spacing: -0.5px;
+}
+.section-sub {
+  font-size: 13px;
+  color: var(--muted);
+  margin-bottom: 20px;
+}
+.divider {
+  width: 40px;
+  height: 3px;
+  background: var(--blue);
+  border-radius: 2px;
+  margin-bottom: 20px;
+}
+
+/* TABS */
+.tabs {
+  display: flex;
+  gap: 8px;
+  margin-bottom: 24px;
+  border-bottom: 2px solid var(--border);
+  padding-bottom: 0;
+}
+.tab-btn {
+  padding: 10px 18px;
+  border: none;
+  background: none;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--muted);
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  margin-bottom: -2px;
+  transition: all .2s;
+}
+.tab-btn.active {
+  color: var(--blue);
+  border-bottom-color: var(--blue);
+}
+.tab-content { display: none; }
+.tab-content.active { display: block; }
+
+/* FORM */
+.form-group {
+  margin-bottom: 16px;
+}
+.form-group label {
+  display: block;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--muted);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.form-group input,
+.form-group select {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1.5px solid var(--border);
+  border-radius: 10px;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 15px;
+  background: var(--card);
+  color: var(--text);
+  transition: border-color .2s;
+  -webkit-appearance: none;
+}
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: var(--blue);
+}
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+/* PREMIUM PREVIEW */
+.premium-preview {
+  background: linear-gradient(135deg, var(--blue) 0%, #3a6ff8 100%);
+  border-radius: 14px;
+  padding: 20px;
+  color: #fff;
+  margin: 20px 0;
+  display: none;
+}
+.premium-preview.show { display: block; }
+.pp-head {
+  font-size: 12px;
+  color: rgba(255,255,255,0.7);
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+  margin-bottom: 4px;
+}
+.pp-amount {
+  font-family: 'Syne', sans-serif;
+  font-size: 40px;
+  font-weight: 800;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+.pp-amount span { font-size: 20px; }
+.pp-sub { font-size: 13px; color: rgba(255,255,255,0.7); margin-bottom: 16px; }
+.pp-row {
+  display: flex;
+  justify-content: space-between;
+  font-size: 13px;
+  padding: 6px 0;
+  border-top: 1px solid rgba(255,255,255,0.15);
+}
+.pp-row .key { color: rgba(255,255,255,0.7); }
+.pp-row .val { font-weight: 600; }
+.badge {
+  display: inline-block;
+  padding: 2px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.badge-high   { background: var(--red);    color: #fff; }
+.badge-medium { background: var(--orange); color: #fff; }
+.badge-low    { background: var(--green);  color: #fff; }
+
+/* BUTTONS */
+.btn {
+  width: 100%;
+  padding: 15px;
+  border: none;
+  border-radius: 12px;
+  font-family: 'Syne', sans-serif;
+  font-size: 16px;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all .2s;
+  letter-spacing: 0.3px;
+}
+.btn-primary {
+  background: var(--blue);
+  color: #fff;
+}
+.btn-primary:hover { background: var(--blue-dark); transform: translateY(-1px); }
+.btn-primary:active { transform: translateY(0); }
+.btn-green {
+  background: var(--green);
+  color: #fff;
+}
+.btn-outline {
+  background: transparent;
+  color: var(--blue);
+  border: 2px solid var(--blue);
+}
+.btn:disabled { opacity: .5; cursor: not-allowed; }
+.btn-sm {
+  padding: 10px 20px;
+  width: auto;
+  font-size: 14px;
+}
+
+/* CARDS */
+.card {
+  background: var(--card);
+  border-radius: 16px;
+  padding: 20px;
+  border: 1px solid var(--border);
+  margin-bottom: 12px;
+}
+.card-title {
+  font-family: 'Syne', sans-serif;
+  font-weight: 700;
+  font-size: 15px;
+  margin-bottom: 12px;
+}
+
+/* TRIGGER CARDS */
+.trigger-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10px;
+}
+.trigger-card {
+  background: var(--card);
+  border: 1.5px solid var(--border);
+  border-radius: 12px;
+  padding: 14px;
+  text-align: center;
+}
+.trigger-card.high  { border-color: var(--red);    background: #fff5f5; }
+.trigger-card.medium { border-color: var(--orange); background: #fff8f5; }
+.trigger-icon { font-size: 26px; margin-bottom: 6px; }
+.trigger-name { font-weight: 700; font-size: 13px; margin-bottom: 4px; }
+.trigger-val  { font-size: 11px; color: var(--muted); }
+.trigger-payout { font-family: 'Syne', sans-serif; font-weight: 800; font-size: 15px; color: var(--green); margin-top: 4px; }
+
+/* ALERT */
+.alert {
+  border-radius: 10px;
+  padding: 14px;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 500;
+  display: none;
+}
+.alert.show { display: block; }
+.alert-success { background: #e6f9ee; color: #155724; border: 1px solid #b2dfcc; }
+.alert-error   { background: #fde8e8; color: #721c24; border: 1px solid #f5c2c2; }
+.alert-info    { background: #e8f0fe; color: #1a3599; border: 1px solid #b8cbf7; }
+
+/* POOL BANNER */
+.pool-banner {
+  background: linear-gradient(90deg, #1a3599, #2547D0);
+  border-radius: 14px;
+  padding: 18px;
+  color: #fff;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
+.pool-amount {
+  font-family: 'Syne', sans-serif;
+  font-size: 26px;
+  font-weight: 800;
+}
+.pool-label { font-size: 11px; color: rgba(255,255,255,0.7); }
+.pool-icon { font-size: 36px; }
+
+/* HOW IT WORKS */
+.steps { position: relative; }
+.step {
+  display: flex;
+  gap: 16px;
+  padding: 0 0 24px 0;
+  position: relative;
+}
+.step:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  left: 19px;
+  top: 40px;
+  bottom: 0;
+  width: 2px;
+  background: var(--border);
+}
+.step-num {
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Syne', sans-serif;
+  font-weight: 800;
+  font-size: 16px;
+  color: #fff;
+  flex-shrink: 0;
+  z-index: 1;
+}
+.step-body .step-title { font-weight: 700; font-size: 15px; margin-bottom: 3px; }
+.step-body .step-desc  { font-size: 13px; color: var(--muted); line-height: 1.4; }
+
+/* LOADER */
+.spinner {
+  width: 20px; height: 20px;
+  border: 2px solid rgba(255,255,255,0.3);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+  display: inline-block;
+  vertical-align: middle;
+  margin-right: 8px;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* BOTTOM NAV */
+.bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 1px solid var(--border);
+  display: flex;
+  z-index: 200;
+}
+.bn-item {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 10px 0;
+  text-decoration: none;
+  color: var(--muted);
+  font-size: 10px;
+  font-weight: 600;
+  gap: 3px;
+  transition: color .2s;
+}
+.bn-item .ic { font-size: 20px; }
+.bn-item.active { color: var(--blue); }
+
+/* TOASTER */
+.toast {
+  position: fixed;
+  bottom: 80px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: #0D0D0D;
+  color: #fff;
+  padding: 12px 20px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+  z-index: 999;
+  opacity: 0;
+  transition: all .3s;
+  white-space: nowrap;
+  max-width: 90vw;
+  text-align: center;
+}
+.toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* WEATHER CARD */
+.weather-card {
+  background: var(--card);
+  border-radius: 14px;
+  padding: 16px;
+  border: 1.5px solid var(--border);
+  margin-bottom: 16px;
+}
+.weather-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid var(--border);
+}
+.weather-row:last-child { border-bottom: none; }
+.w-label { font-size: 13px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.w-val   { font-family: 'Syne', sans-serif; font-weight: 700; font-size: 15px; }
+
+/* Animated trigger flash */
+@keyframes triggerPulse {
+  0%   { box-shadow: 0 0 0 0 rgba(230,57,70,0.4); }
+  70%  { box-shadow: 0 0 0 12px rgba(230,57,70,0); }
+  100% { box-shadow: 0 0 0 0 rgba(230,57,70,0); }
+}
+.pulse-red { animation: triggerPulse 1.5s ease-out infinite; }
+
+/* Spacer for fixed nav */
+.pb-nav { padding-bottom: 80px; }
+</style>
+</head>
+<body>
+
+<nav>
+  <div class="nav-logo">Gig<span>Shield</span></div>
+  <div class="nav-links">
+    <a href="#" onclick="switchTab('register'); return false;">Join</a>
+    <a href="#" onclick="switchTab('how'); return false;">How it works</a>
+    <a href="/dashboard">Dashboard</a>
+    <a href="/admin">Admin</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-tag"></div>
+  <h1>Protect Your<br>Income. <span>Instantly.</span></h1>
+  <p>AI-powered parametric insurance for India's gig workers. Auto-payouts when rain, heat, or curfew stops you from earning.</p>
+  <div class="hero-stats">
+    <div class="stat-card">
+      <div class="val">₹20–60</div>
+      <div class="lbl">Weekly premium</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">&lt;30s</div>
+      <div class="lbl">Payout speed</div>
+    </div>
+    <div class="stat-card">
+      <div class="val">6</div>
+      <div class="lbl">Auto-triggers</div>
+    </div>
+  </div>
+</div>
+
+<!-- POOL BALANCE -->
+<div class="section" style="padding-bottom:0">
+  <div class="pool-banner" id="poolBanner">
+    <div>
+      <div class="pool-label">🏦 Community Pool Balance</div>
+      <div class="pool-amount" id="poolAmt">Loading…</div>
+      <div class="pool-label" id="poolWorkers">— active workers</div>
+    </div>
+    <div class="pool-icon">🤝</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="section pb-nav" id="register">
+  <div class="tabs">
+    <button class="tab-btn active" onclick="switchTab('register')">Register</button>
+    <button class="tab-btn" onclick="switchTab('login')">Login</button>
+    <button class="tab-btn" onclick="switchTab('weather')">Weather</button>
+    <button class="tab-btn" onclick="switchTab('how')">How it works</button>
+  </div>
+
+  <!-- REGISTER TAB -->
+  <div class="tab-content active" id="tab-register">
+    <div class="section-title">Join GigShield</div>
+    <div class="section-sub">Get income protection in under 2 minutes</div>
+    <div class="divider"></div>
+
+    <div id="regAlert" class="alert"></div>
+
+    <div class="form-group">
+      <label>Full Name</label>
+      <input type="text" id="reg_name" placeholder="Rajan Kumar">
+    </div>
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="tel" id="reg_phone" placeholder="9876543210" maxlength="10">
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>District</label>
+        <select id="reg_district" onchange="calcPreview()">
+          <option value="">Select…</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label>Platform</label>
+        <select id="reg_platform" onchange="calcPreview()">
+          <option value="Zomato">Zomato</option>
+          <option value="Swiggy">Swiggy</option>
+          <option value="Zepto">Zepto</option>
+          <option value="Blinkit">Blinkit</option>
+          <option value="Amazon">Amazon</option>
+          <option value="Flipkart">Flipkart</option>
+          <option value="Dunzo">Dunzo</option>
+          <option value="Other">Other</option>
+        </select>
+      </div>
+    </div>
+    <div class="form-row">
+      <div class="form-group">
+        <label>Weekly Earnings (₹)</label>
+        <input type="number" id="reg_earnings" placeholder="3500" oninput="calcPreview()">
+      </div>
+      <div class="form-group">
+        <label>UPI ID</label>
+        <input type="text" id="reg_upi" placeholder="name@upi">
+      </div>
+    </div>
+
+    <!-- Premium preview -->
+    <div class="premium-preview" id="premiumPreview">
+      <div class="pp-head">Your Weekly Premium</div>
+      <div class="pp-amount"><span>₹</span><span id="ppAmt">0</span></div>
+      <div class="pp-sub">Deducted every Monday from your platform payout</div>
+      <div class="pp-row"><span class="key">District Risk</span><span class="val" id="ppRisk">—</span></div>
+      <div class="pp-row"><span class="key">Coverage (Rain)</span><span class="val">75% daily earnings</span></div>
+      <div class="pp-row"><span class="key">Coverage (Heat/Wind)</span><span class="val">50% daily earnings</span></div>
+      <div class="pp-row"><span class="key">Season Multiplier</span><span class="val" id="ppSeason">—</span></div>
+    </div>
+
+    <button class="btn btn-primary" id="regBtn" onclick="registerWorker()">
+      Register & Pay First Premium
+    </button>
+  </div>
+
+  <!-- LOGIN TAB -->
+  <div class="tab-content" id="tab-login">
+    <div class="section-title">Welcome Back</div>
+    <div class="section-sub">Enter your registered phone number</div>
+    <div class="divider"></div>
+
+    <div id="loginAlert" class="alert"></div>
+
+    <div class="form-group">
+      <label>Phone Number</label>
+      <input type="tel" id="login_phone" placeholder="9876543210" maxlength="10">
+    </div>
+    <button class="btn btn-primary" onclick="loginWorker()">Login</button>
+
+    <!-- Worker dashboard after login -->
+    <div id="workerDash" style="display:none; margin-top:24px">
+      <div class="card">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px">
+          <div>
+            <div style="font-family:Syne,sans-serif; font-weight:800; font-size:20px" id="wd_name"></div>
+            <div style="font-size:13px; color:var(--muted)" id="wd_district"></div>
+          </div>
+          <div id="wd_badge"></div>
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; margin-bottom:12px">
+          <div style="text-align:center; background:var(--bg); border-radius:10px; padding:12px">
+            <div style="font-family:Syne,sans-serif; font-weight:800; font-size:18px; color:var(--blue)" id="wd_paid_in"></div>
+            <div style="font-size:11px; color:var(--muted)">Contributed</div>
+          </div>
+          <div style="text-align:center; background:var(--bg); border-radius:10px; padding:12px">
+            <div style="font-family:Syne,sans-serif; font-weight:800; font-size:18px; color:var(--green)" id="wd_received"></div>
+            <div style="font-size:11px; color:var(--muted)">Received</div>
+          </div>
+          <div style="text-align:center; background:var(--bg); border-radius:10px; padding:12px">
+            <div style="font-family:Syne,sans-serif; font-weight:800; font-size:18px; color:var(--gold)" id="wd_premium"></div>
+            <div style="font-size:11px; color:var(--muted)">Weekly</div>
+          </div>
+        </div>
+        <button class="btn btn-green" onclick="payPremium()" id="payBtn">💳 Pay This Week's Premium</button>
+        <button class="btn btn-outline" onclick="checkWeatherForWorker()" id="checkBtn" style="margin-top:10px">🌦 Check My Zone Weather</button>
+      </div>
+
+      <div class="card" id="payoutHistCard" style="display:none">
+        <div class="card-title">💸 Payout History</div>
+        <div id="payoutList"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- WEATHER TAB -->
+  <div class="tab-content" id="tab-weather">
+    <div class="section-title">Live Weather Check</div>
+    <div class="section-sub">Check if disruption triggers are active in your zone</div>
+    <div class="divider"></div>
+
+    <div class="form-group">
+      <label>Select District</label>
+      <select id="weather_district">
+        <option value="">Select…</option>
+      </select>
+    </div>
+    <button class="btn btn-primary" onclick="checkWeather()">🔍 Check Triggers</button>
+
+    <div id="weatherResult" style="margin-top:20px; display:none">
+      <div class="weather-card" id="wCard">
+        <div style="font-family:Syne,sans-serif; font-weight:800; font-size:16px; margin-bottom:12px" id="wDistrict"></div>
+        <div class="weather-row">
+          <span class="w-label">🌧 Rainfall</span>
+          <span class="w-val" id="wRain">—</span>
+        </div>
+        <div class="weather-row">
+          <span class="w-label">🌡 Temperature</span>
+          <span class="w-val" id="wTemp">—</span>
+        </div>
+        <div class="weather-row">
+          <span class="w-label">💨 Wind Speed</span>
+          <span class="w-val" id="wWind">—</span>
+        </div>
+      </div>
+
+      <div id="triggersActive" style="display:none">
+        <div style="background:var(--red); color:#fff; border-radius:12px; padding:16px; margin-bottom:12px" class="pulse-red">
+          <div style="font-family:Syne,sans-serif; font-weight:800; font-size:16px">🚨 Disruption Detected!</div>
+          <div style="font-size:13px; opacity:.9; margin-top:4px" id="tConfidence"></div>
+        </div>
+        <div class="trigger-grid" id="triggerCards"></div>
+        <div style="background:var(--green); color:#fff; border-radius:12px; padding:14px; text-align:center; margin-top:12px">
+          <div style="font-size:12px; opacity:.9">Auto-payout sent to all enrolled workers in this zone</div>
+          <div style="font-family:Syne,sans-serif; font-weight:800; font-size:20px; margin-top:2px" id="tPayoutPct"></div>
+        </div>
+      </div>
+
+      <div id="triggersNone" style="display:none">
+        <div style="background:#e6f9ee; color:#155724; border-radius:12px; padding:16px; text-align:center">
+          <div style="font-size:24px; margin-bottom:6px">✅</div>
+          <div style="font-weight:700">No disruptions detected</div>
+          <div style="font-size:13px; margin-top:4px">Weather conditions are normal. Keep earning!</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- HOW IT WORKS -->
+  <div class="tab-content" id="tab-how" >
+    <div class="section-title">How GigShield Works</div>
+    <div class="section-sub">Like சீட்டு — community-powered, automated & instant</div>
+    <div class="divider"></div>
+
+    <div class="steps">
+      <div class="step">
+        <div class="step-num" style="background:var(--blue)">1</div>
+        <div class="step-body">
+          <div class="step-title">Register & Get Profiled</div>
+          <div class="step-desc">AI assigns your district a risk score using 10+ years of IMD weather data. Your weekly premium is calculated dynamically.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:#2eb85c">2</div>
+        <div class="step-body">
+          <div class="step-title">Pay Weekly Premium via Razorpay</div>
+          <div class="step-desc">₹20–60/week goes into the community pool — just like a சீட்டு. Secure payment via Razorpay. No bank details stored.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:var(--orange)">3</div>
+        <div class="step-body">
+          <div class="step-title">AI Monitors 24/7</div>
+          <div class="step-desc">OpenMeteo + IMD APIs checked every 30 minutes. Rain, heat, wind, floods, curfews — all monitored automatically.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:var(--red)">4</div>
+        <div class="step-body">
+          <div class="step-title">Disruption Detected → Fraud Check</div>
+          <div class="step-desc">When ≥80% confidence, fraud engine validates GPS, activity patterns, and duplicate claims. Takes under 2 seconds.</div>
+        </div>
+      </div>
+      <div class="step">
+        <div class="step-num" style="background:var(--blue)">5</div>
+        <div class="step-body">
+          <div class="step-title">₹ Auto-Sent to Your UPI</div>
+          <div class="step-desc">75% of daily earnings for high triggers, 50% for medium. Via Razorpay Payout API in under 30 seconds. You did nothing.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Triggers reference -->
+    <div class="card-title" style="margin-bottom:12px">📋 Auto-Trigger Reference</div>
+    <div class="trigger-grid">
+      <div class="trigger-card high">
+        <div class="trigger-icon">🌧</div>
+        <div class="trigger-name">Heavy Rainfall</div>
+        <div class="trigger-val">&gt;50mm/24h</div>
+        <div class="trigger-payout">75% daily</div>
+      </div>
+      <div class="trigger-card high">
+        <div class="trigger-icon">🚨</div>
+        <div class="trigger-name">Govt Curfew</div>
+        <div class="trigger-val">Movement restricted</div>
+        <div class="trigger-payout">75% daily</div>
+      </div>
+      <div class="trigger-card high">
+        <div class="trigger-icon">🌊</div>
+        <div class="trigger-name">Flood Warning</div>
+        <div class="trigger-val">Official IMD alert</div>
+        <div class="trigger-payout">75% daily</div>
+      </div>
+      <div class="trigger-card medium">
+        <div class="trigger-icon">🌡</div>
+        <div class="trigger-name">Extreme Heat</div>
+        <div class="trigger-val">&gt;42°C</div>
+        <div class="trigger-payout">50% daily</div>
+      </div>
+      <div class="trigger-card medium">
+        <div class="trigger-icon">💨</div>
+        <div class="trigger-name">High Wind</div>
+        <div class="trigger-val">&gt;35km/h</div>
+        <div class="trigger-payout">50% daily</div>
+      </div>
+      <div class="trigger-card medium">
+        <div class="trigger-icon">🚌</div>
+        <div class="trigger-name">Transport Strike</div>
+        <div class="trigger-val">Zones blocked</div>
+        <div class="trigger-payout">50% daily</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- BOTTOM NAV -->
+<div class="bottom-nav">
+  <a href="/" class="bn-item active">
+    <span class="ic">🏠</span>Home
+  </a>
+  <a href="/dashboard" class="bn-item">
+    <span class="ic">📊</span>Dashboard
+  </a>
+  <a href="#tab-weather" class="bn-item" onclick="switchTab('weather')">
+    <span class="ic">🌦</span>Weather
+  </a>
+  <a href="/admin" class="bn-item">
+    <span class="ic">⚙️</span>Admin
+  </a>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const API = '';  // Same origin
+let currentWorker = null;
+
+// Load districts
+async function loadDistricts() {
+  const res = await fetch(`${API}/api/districts`);
+  const data = await res.json();
+  ['reg_district','weather_district'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    data.districts.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d; opt.textContent = d;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+// Load pool
+async function loadPool() {
+  const res = await fetch(`${API}/api/pool/stats`);
+  const d = await res.json();
+  document.getElementById('poolAmt').textContent = `₹${d.balance.toLocaleString()}`;
+  document.getElementById('poolWorkers').textContent = `${d.active_workers} active workers protected`;
+}
+
+// Tab switch
+function switchTab(name) {
+  document.querySelectorAll('.tab-btn').forEach((b,i) => {
+    b.classList.toggle('active', ['register','login','weather','how'][i] === name);
+  });
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.getElementById(`tab-${name}`).classList.add('active');
+}
+
+// Preview premium
+async function calcPreview() {
+  const d = document.getElementById('reg_district').value;
+  const p = document.getElementById('reg_platform').value;
+  const e = parseFloat(document.getElementById('reg_earnings').value) || 0;
+  if (!d || !e) return;
+
+  const res = await fetch(`${API}/api/districts`);
+  const data = await res.json();
+  const risk = data.risk_scores[d] || 70;
+  const tier = risk >= 100 ? 'HIGH' : risk >= 70 ? 'MEDIUM' : 'LOW';
+  const rate = risk >= 100 ? 0.05 : risk >= 70 ? 0.035 : 0.02;
+  const pMult = {'Zomato':1.1,'Swiggy':1.1,'Zepto':1.0,'Blinkit':1.0,'Amazon':0.9,'Flipkart':0.9,'Dunzo':1.05}[p] || 1.0;
+  const month = new Date().getMonth()+1;
+  const sMult = month>=6&&month<=9?1.5:month>=3&&month<=5?1.2:month>=10&&month<=11?0.9:0.8;
+  const prem = Math.max(20, Math.min(60, Math.round(e * rate * pMult * sMult)));
+
+  document.getElementById('ppAmt').textContent = prem;
+  document.getElementById('ppRisk').innerHTML = `<span class="badge badge-${tier.toLowerCase()}">${tier} (${risk})</span>`;
+  document.getElementById('ppSeason').textContent = `${sMult}×`;
+  document.getElementById('premiumPreview').classList.add('show');
+}
+
+// Register
+async function registerWorker() {
+  const btn = document.getElementById('regBtn');
+  const alert = document.getElementById('regAlert');
+  const fields = {
+    name: document.getElementById('reg_name').value.trim(),
+    phone: document.getElementById('reg_phone').value.trim(),
+    district: document.getElementById('reg_district').value,
+    platform: document.getElementById('reg_platform').value,
+    weekly_earnings: document.getElementById('reg_earnings').value,
+    upi_id: document.getElementById('reg_upi').value.trim()
+  };
+
+  if (!fields.name||!fields.phone||!fields.district||!fields.weekly_earnings||!fields.upi_id) {
+    showAlert(alert, 'error', 'Please fill all fields');
+    return;
+  }
+  if (fields.phone.length !== 10) {
+    showAlert(alert, 'error', 'Enter valid 10-digit phone');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span> Registering…';
+
+  try {
+    const res = await fetch(`${API}/api/worker/register`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify(fields)
+    });
+    const data = await res.json();
+
+    if (!res.ok) throw new Error(data.error || 'Registration failed');
+
+    currentWorker = {_id: data.worker_id, ...fields, weekly_premium: data.weekly_premium};
+    showAlert(alert, 'success', `✅ Registered! Risk: ${data.risk_tier} | Premium: ₹${data.weekly_premium}/week`);
+    
+    setTimeout(() => initiatePayment(data.worker_id, data.weekly_premium, fields.name, fields.phone), 1000);
+  } catch(e) {
+    showAlert(alert, 'error', e.message);
+  } finally {
+    btn.disabled = false;
+    btn.innerHTML = 'Register & Pay First Premium';
+  }
+}
+
+// Razorpay Payment
+async function initiatePayment(workerId, premium, name, phone) {
+  try {
+    const res = await fetch(`${API}/api/payment/create-order`, {
+      method: 'POST',
+      headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({worker_id: workerId})
+    });
+    const order = await res.json();
+    if (!res.ok) throw new Error(order.error);
+
+    const options = {
+      key: order.key,
+      amount: order.amount,
+      currency: 'INR',
+      name: 'GigShield',
+      description: `Weekly Premium — ₹${premium}`,
+      image: 'https://i.imgur.com/n5tj4Yh.png',
+      order_id: order.order_id,
+      handler: async function(response) {
+        const vRes = await fetch(`${API}/api/payment/verify`, {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({
+            razorpay_order_id: response.razorpay_order_id,
+            razorpay_payment_id: response.razorpay_payment_id,
+            razorpay_signature: response.razorpay_signature,
+            worker_id: workerId
+          })
+        });
+        const vData = await vRes.json();
+        if (vData.success) {
+          toast(`✅ ₹${premium} added to community pool! Pool: ₹${vData.pool_balance}`);
+          loadPool();
+        }
+      },
+      prefill: {name, contact: phone},
+      theme: {color: '#2547D0'},
+      modal: {ondismiss: () => toast('Payment cancelled. You can pay later from Login tab.')}
+    };
+    const rzp = new Razorpay(options);
+    rzp.open();
+  } catch(e) {
+    toast('Payment init failed: ' + e.message);
+  }
+}
+
+// Login
+async function loginWorker() {
+  const phone = document.getElementById('login_phone').value.trim();
+  const alert = document.getElementById('loginAlert');
+  if (!phone) { showAlert(alert,'error','Enter phone number'); return; }
+
+  const res = await fetch(`${API}/api/worker/login`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({phone})
+  });
+  const data = await res.json();
+  if (!res.ok) { showAlert(alert,'error',data.error); return; }
+
+  currentWorker = data.worker;
+  showAlert(alert,'success',`Welcome back, ${data.worker.name}!`);
+  showWorkerDash(data.worker);
+  loadWorkerDetails(data.worker._id);
+}
+
+function showWorkerDash(w) {
+  document.getElementById('workerDash').style.display = 'block';
+  document.getElementById('wd_name').textContent = w.name;
+  document.getElementById('wd_district').textContent = `${w.district} · ${w.platform}`;
+  document.getElementById('wd_badge').innerHTML = `<span class="badge badge-${(w.risk_tier||'LOW').toLowerCase()}">${w.risk_tier||'LOW'}</span>`;
+  document.getElementById('wd_paid_in').textContent = `₹${(w.total_paid_in||0).toLocaleString()}`;
+  document.getElementById('wd_received').textContent = `₹${(w.total_received||0).toLocaleString()}`;
+  document.getElementById('wd_premium').textContent = `₹${w.weekly_premium}`;
+}
+
+async function loadWorkerDetails(wid) {
+  const res = await fetch(`${API}/api/worker/${wid}`);
+  const d = await res.json();
+  if (!res.ok) return;
+  showWorkerDash(d.worker);
+
+  if (d.payouts && d.payouts.length > 0) {
+    document.getElementById('payoutHistCard').style.display='block';
+    document.getElementById('payoutList').innerHTML = d.payouts.map(p =>
+      `<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px">
+        <span>💸 ${p.trigger_type||'Payout'}</span>
+        <span style="font-weight:700;color:var(--green)">+₹${p.amount}</span>
+      </div>`
+    ).join('');
+  }
+}
+
+async function payPremium() {
+  if (!currentWorker) return;
+  await initiatePayment(currentWorker._id, currentWorker.weekly_premium, currentWorker.name, currentWorker.phone);
+}
+
+async function checkWeatherForWorker() {
+  if (!currentWorker) return;
+  document.getElementById('weather_district').value = currentWorker.district;
+  switchTab('weather');
+  await checkWeather();
+}
+
+// Weather check
+async function checkWeather() {
+  const district = document.getElementById('weather_district').value;
+  if (!district) { toast('Select a district first'); return; }
+
+  const btn = event.target;
+  btn.disabled = true;
+  btn.textContent = '⏳ Checking…';
+
+  const res = await fetch(`${API}/api/trigger/check`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({district})
+  });
+  const d = await res.json();
+
+  btn.disabled = false;
+  btn.textContent = '🔍 Check Triggers';
+
+  const wr = document.getElementById('weatherResult');
+  wr.style.display = 'block';
+  document.getElementById('wDistrict').textContent = `📍 ${district}`;
+  document.getElementById('wRain').textContent = `${d.weather.rainfall_mm.toFixed(1)} mm ${d.weather.rainfall_mm>=50?'🚨':''}`;
+  document.getElementById('wTemp').textContent = `${d.weather.temp_c.toFixed(1)}°C ${d.weather.temp_c>=42?'🔥':''}`;
+  document.getElementById('wWind').textContent = `${d.weather.wind_kmh.toFixed(1)} km/h ${d.weather.wind_kmh>=35?'🌪':''}`;
+
+  if (d.triggered) {
+    document.getElementById('triggersActive').style.display='block';
+    document.getElementById('triggersNone').style.display='none';
+    document.getElementById('tConfidence').textContent = `Confidence: ${d.confidence}% · ${d.triggers.length} trigger(s) active`;
+    document.getElementById('tPayoutPct').textContent = `${d.payout_percent}% of daily earnings → auto-sent`;
+    document.getElementById('triggerCards').innerHTML = d.triggers.map(t =>
+      `<div class="trigger-card ${t.severity.toLowerCase()}">
+        <div class="trigger-icon">${t.type.includes('Rain')?'🌧':t.type.includes('Heat')?'🌡':'💨'}</div>
+        <div class="trigger-name">${t.type}</div>
+        <div class="trigger-val">${t.value}</div>
+        <div class="trigger-payout">${t.severity==='HIGH'?'75%':'50%'} daily</div>
+      </div>`
+    ).join('');
+  } else {
+    document.getElementById('triggersActive').style.display='none';
+    document.getElementById('triggersNone').style.display='block';
+  }
+}
+
+// Helpers
+function showAlert(el, type, msg) {
+  el.className = `alert alert-${type} show`;
+  el.textContent = msg;
+  setTimeout(() => el.classList.remove('show'), 6000);
+}
+
+function toast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 3500);
+}
+
+// Init
+loadDistricts();
+loadPool();
+setInterval(loadPool, 30000);
+</script>
+</body>
+</html>

@@ -1,0 +1,492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GigShield Admin</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Mono:wght@400;500&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root {
+  --blue:#2547D0; --green:#1DB954; --orange:#FF6B35; --red:#E63946;
+  --bg:#0F1117; --card:#1A1D26; --card2:#22263A; --text:#F0EEE8;
+  --muted:#8891A5; --border:#2A2F42; --gold:#F4B942;
+  --font: 'DM Sans', sans-serif;
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:var(--font);background:var(--bg);color:var(--text);min-height:100vh;}
+/* ── Login Overlay ── */
+#loginOverlay{position:fixed;inset:0;background:var(--bg);z-index:9999;display:flex;align-items:center;justify-content:center;}
+.login-box{background:var(--card);border:1px solid var(--border);border-radius:20px;padding:48px 40px;width:100%;max-width:400px;text-align:center;}
+.login-logo{font-family:Syne,sans-serif;font-weight:800;font-size:28px;margin-bottom:6px;}
+.login-logo span{color:var(--gold);}
+.login-sub{font-size:13px;color:var(--muted);margin-bottom:32px;}
+.login-tag{display:inline-block;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:3px 10px;border-radius:6px;letter-spacing:1px;margin-bottom:16px;}
+.login-field{width:100%;background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:12px 16px;color:var(--text);font-size:14px;margin-bottom:14px;outline:none;font-family:var(--font);}
+.login-field:focus{border-color:var(--blue);}
+.login-btn{width:100%;background:var(--blue);color:#fff;border:none;border-radius:10px;padding:13px;font-size:15px;font-weight:700;cursor:pointer;font-family:Syne,sans-serif;margin-top:4px;transition:opacity .2s;}
+.login-btn:hover{opacity:.88;}
+.login-err{color:#f87171;font-size:13px;margin-top:12px;display:none;}
+nav{background:var(--card);border-bottom:1px solid var(--border);padding:0 24px;display:flex;align-items:center;justify-content:space-between;height:56px;}
+.logo{font-family:Syne,sans-serif;font-weight:800;font-size:18px;color:var(--text);}
+.logo span{color:var(--gold);}
+.admin-tag{background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:3px 8px;border-radius:6px;letter-spacing:1px;}
+.layout{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 56px);}
+.sidebar{background:var(--card);border-right:1px solid var(--border);padding:20px 0;}
+.sb-item{display:flex;align-items:center;gap:10px;padding:12px 20px;cursor:pointer;font-size:14px;font-weight:500;color:var(--muted);transition:all .2s;border-left:3px solid transparent;}
+.sb-item:hover{background:var(--card2);color:var(--text);}
+.sb-item.active{background:var(--card2);color:var(--blue);border-left-color:var(--blue);}
+.sb-item .ic{font-size:18px;width:22px;text-align:center;}
+.main{padding:24px;overflow-y:auto;}
+.page{display:none;}
+.page.active{display:block;}
+.page-title{font-family:Syne,sans-serif;font-weight:800;font-size:24px;margin-bottom:4px;}
+.page-sub{font-size:13px;color:var(--muted);margin-bottom:24px;}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}
+@media(max-width:900px){.stats-grid{grid-template-columns:repeat(2,1fr);}
+.layout{grid-template-columns:1fr;}.sidebar{display:none;}}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:18px;}
+.stat-val{font-family:Syne,sans-serif;font-weight:800;font-size:28px;line-height:1;margin-bottom:4px;}
+.stat-lbl{font-size:12px;color:var(--muted);}
+.table-wrap{background:var(--card);border:1px solid var(--border);border-radius:12px;overflow:hidden;margin-bottom:24px;}
+.table-head{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:1px solid var(--border);}
+.table-head-title{font-family:Syne,sans-serif;font-weight:700;font-size:15px;}
+table{width:100%;border-collapse:collapse;}
+th,td{padding:12px 20px;text-align:left;font-size:13px;}
+th{background:var(--card2);color:var(--muted);font-weight:600;letter-spacing:0.4px;font-size:11px;text-transform:uppercase;}
+td{border-top:1px solid var(--border);}
+tr:hover td{background:var(--card2);}
+.badge{display:inline-block;padding:2px 8px;border-radius:6px;font-size:11px;font-weight:700;text-transform:uppercase;}
+.badge-high{background:rgba(230,57,70,.2);color:#f87171;}
+.badge-medium{background:rgba(255,107,53,.2);color:#fb923c;}
+.badge-low{background:rgba(29,185,84,.2);color:#4ade80;}
+.badge-active{background:rgba(29,185,84,.2);color:#4ade80;}
+.badge-flagged{background:rgba(230,57,70,.2);color:#f87171;}
+.btn{padding:10px 18px;border:none;border-radius:8px;font-family:Syne,sans-serif;font-size:13px;font-weight:700;cursor:pointer;transition:all .2s;}
+.btn-primary{background:var(--blue);color:#fff;}
+.btn-primary:hover{background:#1a3599;}
+.btn-red{background:var(--red);color:#fff;}
+.btn-green{background:var(--green);color:#fff;}
+.btn-sm{padding:6px 12px;font-size:12px;}
+.card{background:var(--card);border:1px solid var(--border);border-radius:12px;padding:20px;margin-bottom:16px;}
+.form-group{margin-bottom:14px;}
+.form-group label{display:block;font-size:11px;font-weight:600;color:var(--muted);letter-spacing:.5px;text-transform:uppercase;margin-bottom:6px;}
+.form-group select,.form-group input{width:100%;padding:10px 12px;background:var(--card2);border:1.5px solid var(--border);border-radius:8px;color:var(--text);font-family:var(--font);font-size:14px;}
+.form-group select:focus,.form-group input:focus{outline:none;border-color:var(--blue);}
+.form-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.alert{border-radius:8px;padding:12px;margin-bottom:12px;font-size:13px;font-weight:500;display:none;}
+.alert.show{display:block;}
+.alert-success{background:rgba(29,185,84,.1);color:#4ade80;border:1px solid rgba(29,185,84,.3);}
+.alert-error{background:rgba(230,57,70,.1);color:#f87171;border:1px solid rgba(230,57,70,.3);}
+.pool-hero{background:linear-gradient(135deg,#1a3599,var(--blue));border-radius:14px;padding:24px;margin-bottom:24px;display:grid;grid-template-columns:repeat(3,1fr);gap:16px;}
+.ph-item{text-align:center;}
+.ph-val{font-family:Syne,sans-serif;font-weight:800;font-size:30px;color:var(--gold);line-height:1;}
+.ph-lbl{font-size:12px;color:rgba(255,255,255,.7);margin-top:4px;}
+.mono{font-family:'DM Mono',monospace;font-size:12px;}
+.trigger-result{background:var(--card2);border:1px solid var(--border);border-radius:10px;padding:16px;margin-top:16px;}
+.result-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid var(--border);font-size:13px;}
+.result-row:last-child{border-bottom:none;}
+.spinner{width:16px;height:16px;border:2px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;display:inline-block;vertical-align:middle;margin-right:6px;}
+@keyframes spin{to{transform:rotate(360deg);}}
+</style>
+</head>
+<body>
+
+<!-- ── Admin Login Overlay ── -->
+<div id="loginOverlay">
+  <div class="login-box">
+    <div class="login-logo">Gig<span>Shield</span></div>
+    <span class="login-tag">ADMIN PORTAL</span>
+    <div class="login-sub">Restricted access. Enter your credentials.</div>
+    <input class="login-field" type="text" id="loginUser" placeholder="Username" autocomplete="off"/>
+    <input class="login-field" type="password" id="loginPass" placeholder="Password" onkeydown="if(event.key==='Enter')doLogin()"/>
+    <button class="login-btn" onclick="doLogin()">🔐 Login to Admin</button>
+    <div class="login-err" id="loginErr">❌ Invalid username or password</div>
+  </div>
+</div>
+
+<nav>
+  <div class="logo">Gig<span>Shield</span> <span class="admin-tag">ADMIN</span></div>
+  <div style="display:flex;gap:12px;align-items:center">
+    <span style="font-size:13px;color:var(--muted)" id="navTime"></span>
+    <a href="/" style="color:var(--muted);font-size:13px;text-decoration:none">← Back to App</a>
+  </div>
+</nav>
+
+<div class="layout">
+  <div class="sidebar">
+    <div class="sb-item active" onclick="showPage('overview')"><span class="ic">📊</span>Overview</div>
+    <div class="sb-item" onclick="showPage('workers')"><span class="ic">👷</span>Workers</div>
+    <div class="sb-item" onclick="showPage('pool')"><span class="ic">🏦</span>Pool</div>
+    <div class="sb-item" onclick="showPage('trigger')"><span class="ic">⚡</span>Simulate Trigger</div>
+    <div class="sb-item" onclick="showPage('payouts')"><span class="ic">💸</span>Payouts</div>
+    <div class="sb-item" onclick="showPage('weather')"><span class="ic">🌦</span>Weather Monitor</div>
+  </div>
+
+  <div class="main">
+    <!-- OVERVIEW -->
+    <div class="page active" id="page-overview">
+      <div class="page-title">Dashboard Overview</div>
+      <div class="page-sub">Real-time GigShield statistics</div>
+      <div class="stats-grid" id="overviewStats">
+        <div class="stat-card"><div class="stat-val" id="ov_workers">—</div><div class="stat-lbl">Active Workers</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--gold)" id="ov_pool">—</div><div class="stat-lbl">Pool Balance</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--green)" id="ov_collected">—</div><div class="stat-lbl">Total Collected</div></div>
+        <div class="stat-card"><div class="stat-val" style="color:var(--red)" id="ov_paid">—</div><div class="stat-lbl">Total Paid Out</div></div>
+      </div>
+
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="table-head-title">Recent Payouts</div>
+        </div>
+        <table>
+          <thead><tr><th>Worker</th><th>Amount</th><th>Trigger</th><th>UPI</th><th>Status</th><th>Time</th></tr></thead>
+          <tbody id="recentPayoutsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WORKERS -->
+    <div class="page" id="page-workers">
+      <div class="page-title">Enrolled Workers</div>
+      <div class="page-sub">All registered GigShield members</div>
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="table-head-title">Workers</div>
+          <button class="btn btn-primary btn-sm" onclick="loadWorkers()">🔄 Refresh</button>
+        </div>
+        <table>
+          <thead><tr><th>Name</th><th>District</th><th>Platform</th><th>Risk</th><th>Premium</th><th>Paid In</th><th>Received</th><th>Trust</th></tr></thead>
+          <tbody id="workersBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- POOL -->
+    <div class="page" id="page-pool">
+      <div class="page-title">Community Pool</div>
+      <div class="page-sub">সীট্টু-style pooled insurance fund</div>
+      <div class="pool-hero" id="poolHero">
+        <div class="ph-item"><div class="ph-val" id="pool_balance">—</div><div class="ph-lbl">Current Balance</div></div>
+        <div class="ph-item"><div class="ph-val" id="pool_collected">—</div><div class="ph-lbl">Total Collected</div></div>
+        <div class="ph-item"><div class="ph-val" id="pool_paid">—</div><div class="ph-lbl">Total Paid Out</div></div>
+      </div>
+
+      <div class="card">
+        <div style="font-family:Syne,sans-serif;font-weight:700;font-size:16px;margin-bottom:16px">Manual Worker Payout</div>
+        <div id="manualPayoutAlert" class="alert"></div>
+        <div class="form-group">
+          <label>Worker ID (from Workers table)</label>
+          <input type="text" id="mp_worker_id" placeholder="MongoDB ObjectId">
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Trigger Type</label>
+            <select id="mp_trigger">
+              <option>Heavy Rainfall</option>
+              <option>Extreme Heat</option>
+              <option>High Wind</option>
+              <option>Flood Warning</option>
+              <option>Govt Curfew</option>
+              <option>Transport Strike</option>
+              <option>Manual Override</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Payout %</label>
+            <select id="mp_pct">
+              <option value="75">75% (HIGH)</option>
+              <option value="50">50% (MEDIUM)</option>
+              <option value="100">100% (Emergency)</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-green" onclick="manualPayout()">💸 Send Payout via UPI</button>
+      </div>
+    </div>
+
+    <!-- SIMULATE TRIGGER -->
+    <div class="page" id="page-trigger">
+      <div class="page-title">Simulate Disruption Trigger</div>
+      <div class="page-sub">Auto-payout to ALL enrolled workers in a zone</div>
+      <div class="card">
+        <div id="simAlert" class="alert"></div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>District</label>
+            <select id="sim_district">
+              <option value="">Select district…</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label>Trigger Type</label>
+            <select id="sim_trigger">
+              <option>Heavy Rainfall</option>
+              <option>Extreme Heat</option>
+              <option>High Wind</option>
+              <option>Flood Warning</option>
+              <option>Govt Curfew</option>
+              <option>Transport Strike</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-group">
+          <label>Payout Percentage</label>
+          <select id="sim_pct">
+            <option value="75">75% of daily earnings (HIGH)</option>
+            <option value="50">50% of daily earnings (MEDIUM)</option>
+          </select>
+        </div>
+        <button class="btn btn-red" onclick="simulateTrigger()" id="simBtn">⚡ Trigger Auto-Payout for Zone</button>
+
+        <div class="trigger-result" id="simResult" style="display:none">
+          <div style="font-family:Syne,sans-serif;font-weight:700;font-size:15px;margin-bottom:12px" id="simResultTitle"></div>
+          <div id="simResultRows"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAYOUTS -->
+    <div class="page" id="page-payouts">
+      <div class="page-title">Payout History</div>
+      <div class="page-sub">All UPI transfers made from the community pool</div>
+      <div class="table-wrap">
+        <div class="table-head">
+          <div class="table-head-title">All Payouts</div>
+          <button class="btn btn-primary btn-sm" onclick="loadPayouts()">🔄 Refresh</button>
+        </div>
+        <table>
+          <thead><tr><th>Worker</th><th>Amount</th><th>Trigger</th><th>UPI ID</th><th>Razorpay ID</th><th>Status</th><th>Time</th></tr></thead>
+          <tbody id="payoutsBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- WEATHER MONITOR -->
+    <div class="page" id="page-weather">
+      <div class="page-title">Live Weather Monitor</div>
+      <div class="page-sub">Check parametric triggers for any district</div>
+      <div class="card">
+        <div class="form-row">
+          <div class="form-group">
+            <label>District</label>
+            <select id="wm_district"><option value="">Select…</option></select>
+          </div>
+          <div class="form-group" style="display:flex;align-items:flex-end">
+            <button class="btn btn-primary" style="width:100%" onclick="checkWeatherAdmin()">🔍 Check Now</button>
+          </div>
+        </div>
+        <div id="wmResult" style="display:none;margin-top:8px">
+          <div class="trigger-result">
+            <div class="result-row"><span style="color:var(--muted)">🌧 Rainfall</span><span id="wm_rain" class="mono">—</span></div>
+            <div class="result-row"><span style="color:var(--muted)">🌡 Temperature</span><span id="wm_temp" class="mono">—</span></div>
+            <div class="result-row"><span style="color:var(--muted)">💨 Wind Speed</span><span id="wm_wind" class="mono">—</span></div>
+            <div class="result-row"><span style="color:var(--muted)">⚡ Triggered</span><span id="wm_triggered" class="mono">—</span></div>
+            <div class="result-row"><span style="color:var(--muted)">🎯 Confidence</span><span id="wm_conf" class="mono">—</span></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const API = '';
+
+// ── Admin Auth ────────────────────────────────────────────────────────────────
+function doLogin() {
+  const user = document.getElementById('loginUser').value.trim();
+  const pass = document.getElementById('loginPass').value;
+  if (user === 'admin' && pass === 'admin123') {
+    document.getElementById('loginOverlay').style.display = 'none';
+    sessionStorage.setItem('gigshield_admin', '1');
+  } else {
+    const err = document.getElementById('loginErr');
+    err.style.display = 'block';
+    document.getElementById('loginPass').value = '';
+    setTimeout(() => err.style.display = 'none', 3000);
+  }
+}
+
+// Block access if not logged in
+if (sessionStorage.getItem('gigshield_admin') !== '1') {
+  // overlay stays visible — do nothing
+} else {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById('loginOverlay').style.display = 'none';
+  });
+}
+
+
+function showPage(name) {
+  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.sb-item').forEach(s=>s.classList.remove('active'));
+  document.getElementById(`page-${name}`).classList.add('active');
+  event.currentTarget.classList.add('active');
+  if(name==='overview') loadOverview();
+  if(name==='workers') loadWorkers();
+  if(name==='pool') loadPool();
+  if(name==='payouts') loadPayouts();
+}
+
+async function loadOverview() {
+  const r = await fetch(`${API}/api/pool/stats`);
+  const d = await r.json();
+  document.getElementById('ov_workers').textContent = d.active_workers;
+  document.getElementById('ov_pool').textContent = `₹${(d.balance||0).toLocaleString()}`;
+  document.getElementById('ov_collected').textContent = `₹${(d.total_collected||0).toLocaleString()}`;
+  document.getElementById('ov_paid').textContent = `₹${(d.total_paid||0).toLocaleString()}`;
+
+  const body = document.getElementById('recentPayoutsBody');
+  body.innerHTML = (d.recent_payouts||[]).map(p=>`
+    <tr>
+      <td>${p.worker_name||'—'}</td>
+      <td><b>₹${p.amount}</b></td>
+      <td>${p.trigger_type||'—'}</td>
+      <td class="mono">${p.upi_id||'—'}</td>
+      <td><span class="badge ${p.status==='paid'||p.status==='processing'?'badge-active':'badge-medium'}">${p.status}</span></td>
+      <td style="color:var(--muted)">${p.sent_at?new Date(p.sent_at).toLocaleString('en-IN'):'—'}</td>
+    </tr>`).join('') || '<tr><td colspan="6" style="text-align:center;color:var(--muted);padding:24px">No payouts yet</td></tr>';
+}
+
+async function loadWorkers() {
+  const r = await fetch(`${API}/api/admin/workers`);
+  const d = await r.json();
+  const body = document.getElementById('workersBody');
+  body.innerHTML = (d.workers||[]).map(w=>`
+    <tr>
+      <td><b>${w.name}</b><br><span style="color:var(--muted);font-size:11px" class="mono">${w._id}</span></td>
+      <td>${w.district}</td>
+      <td>${w.platform}</td>
+      <td><span class="badge badge-${(w.risk_tier||'LOW').toLowerCase()}">${w.risk_tier||'LOW'} (${w.risk_score||0})</span></td>
+      <td>₹${w.weekly_premium}</td>
+      <td style="color:var(--green)">₹${(w.total_paid_in||0).toLocaleString()}</td>
+      <td style="color:var(--gold)">₹${(w.total_received||0).toLocaleString()}</td>
+      <td><span class="badge ${w.trust_tier===1?'badge-active':w.trust_tier===3?'badge-flagged':'badge-medium'}">T${w.trust_tier||2}</span></td>
+    </tr>`).join('') || '<tr><td colspan="8" style="text-align:center;color:var(--muted);padding:24px">No workers yet</td></tr>';
+}
+
+async function loadPool() {
+  const r = await fetch(`${API}/api/pool/stats`);
+  const d = await r.json();
+  document.getElementById('pool_balance').textContent = `₹${(d.balance||0).toLocaleString()}`;
+  document.getElementById('pool_collected').textContent = `₹${(d.total_collected||0).toLocaleString()}`;
+  document.getElementById('pool_paid').textContent = `₹${(d.total_paid||0).toLocaleString()}`;
+}
+
+async function loadPayouts() {
+  const r = await fetch(`${API}/api/pool/stats`);
+  const d = await r.json();
+  const body = document.getElementById('payoutsBody');
+  body.innerHTML = (d.recent_payouts||[]).map(p=>`
+    <tr>
+      <td>${p.worker_name||'—'}</td>
+      <td><b>₹${p.amount}</b></td>
+      <td>${p.trigger_type||'—'}</td>
+      <td class="mono">${p.upi_id||'—'}</td>
+      <td class="mono" style="font-size:11px">${p.razorpay_payout_id||'—'}</td>
+      <td><span class="badge ${p.status==='paid'||p.status==='processing'||p.status==='simulated'?'badge-active':'badge-medium'}">${p.status}</span></td>
+      <td style="color:var(--muted)">${p.sent_at?new Date(p.sent_at).toLocaleString('en-IN'):'—'}</td>
+    </tr>`).join('') || '<tr><td colspan="7" style="text-align:center;color:var(--muted);padding:24px">No payouts yet</td></tr>';
+}
+
+async function manualPayout() {
+  const wid = document.getElementById('mp_worker_id').value.trim();
+  const trigger = document.getElementById('mp_trigger').value;
+  const pct = parseInt(document.getElementById('mp_pct').value);
+  const alert = document.getElementById('manualPayoutAlert');
+  if (!wid) { showAlert(alert,'error','Enter worker ID'); return; }
+
+  const res = await fetch(`${API}/api/payout/trigger`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({worker_id:wid, trigger_type:trigger, payout_percent:pct})
+  });
+  const d = await res.json();
+  if (d.success) {
+    showAlert(alert,'success',`✅ ${d.message} Pool remaining: ₹${d.pool_remaining}`);
+    loadPool();
+  } else {
+    showAlert(alert,'error', d.error||'Payout failed');
+  }
+}
+
+async function simulateTrigger() {
+  const district = document.getElementById('sim_district').value;
+  const trigger = document.getElementById('sim_trigger').value;
+  const pct = document.getElementById('sim_pct').value;
+  const alert = document.getElementById('simAlert');
+  if (!district) { showAlert(alert,'error','Select a district'); return; }
+
+  const btn = document.getElementById('simBtn');
+  btn.disabled = true;
+  btn.innerHTML = '<span class="spinner"></span>Processing…';
+
+  const res = await fetch(`${API}/api/admin/simulate-trigger`, {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({district, trigger_type:trigger, payout_percent:pct})
+  });
+  const d = await res.json();
+  btn.disabled = false;
+  btn.textContent = '⚡ Trigger Auto-Payout for Zone';
+
+  document.getElementById('simResult').style.display='block';
+  document.getElementById('simResultTitle').textContent =
+    `${district} · ${trigger} · ${d.workers_affected} worker(s) affected · Pool remaining: ₹${d.pool_remaining}`;
+  document.getElementById('simResultRows').innerHTML = (d.results||[]).map(r=>
+    `<div class="result-row">
+      <span>${r.worker}</span>
+      <span style="display:flex;gap:8px;align-items:center">
+        ${r.amount ? `<b>₹${r.amount}</b>` : ''}
+        ${r.upi ? `<span class="mono" style="font-size:11px">${r.upi}</span>` : ''}
+        <span class="badge ${r.status==='sent'?'badge-active':'badge-medium'}">${r.status}${r.reason?`: ${r.reason}`:''}</span>
+      </span>
+    </div>`).join('');
+}
+
+async function checkWeatherAdmin() {
+  const district = document.getElementById('wm_district').value;
+  if (!district) return;
+  const res = await fetch(`${API}/api/trigger/check`, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({district})
+  });
+  const d = await res.json();
+  document.getElementById('wmResult').style.display='block';
+  document.getElementById('wm_rain').textContent = `${d.weather.rainfall_mm.toFixed(1)} mm`;
+  document.getElementById('wm_temp').textContent = `${d.weather.temp_c.toFixed(1)} °C`;
+  document.getElementById('wm_wind').textContent = `${d.weather.wind_kmh.toFixed(1)} km/h`;
+  document.getElementById('wm_triggered').textContent = d.triggered ? '🚨 YES' : '✅ NO';
+  document.getElementById('wm_conf').textContent = d.triggered ? `${d.confidence}%` : 'N/A';
+}
+
+function showAlert(el, type, msg) {
+  el.className = `alert alert-${type} show`;
+  el.textContent = msg;
+}
+
+async function loadDistricts() {
+  const res = await fetch(`${API}/api/districts`);
+  const data = await res.json();
+  ['sim_district','wm_district'].forEach(id => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    data.districts.forEach(d => {
+      const opt = document.createElement('option');
+      opt.value = d; opt.textContent = d;
+      sel.appendChild(opt);
+    });
+  });
+}
+
+// Clock
+setInterval(()=>{
+  document.getElementById('navTime').textContent = new Date().toLocaleTimeString('en-IN');
+},1000);
+
+loadDistricts();
+loadOverview();
+</script>
+</body>
+</html>
